@@ -5,6 +5,9 @@ import re
 import urllib
 import os
 import time
+import socket
+
+socket.setdefaulttimeout(60)
 
 domain_suffix = '.com'
 
@@ -33,7 +36,11 @@ def get_words_from_file(words_file=words_file, init_word_line=0):
 
 def is_ava(domain):
     """判断该域名是否被注册"""
-    data = urllib.urlopen(api % domain).read()
+    try:
+        data = urllib.urlopen(api % domain).read()
+    except:
+        return False
+
     ava_pattern = re.compile(r'<original>(.*) : .*</original>')
     result = ava_pattern.findall(data)
     if '210' in result:

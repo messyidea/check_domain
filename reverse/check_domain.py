@@ -9,7 +9,9 @@ import urllib
 import re
 import os
 import pickle
+import socket
 
+socket.setdefaulttimeout(60)
 api = "http://panda.www.net.cn/cgi-bin/check.cgi?area_domain=%s"  # api地址
 string = "abcdefghigklmnopqrstuvwxyz"                                            # 所有字母
 string_len = len(string)                                          # 长度
@@ -48,7 +50,10 @@ def num_2_string(name, string):
 
 def is_ava(domain):
     """判断该域名是否被注册"""
-    data = urllib.urlopen(api % domain).read()
+    try:
+        data = urllib.urlopen(api % domain).read()
+    except:
+        return False
     ava_pattern = re.compile(r'<original>(.*) : .*</original>')
     perm_pattern = re.compile(r'Forbidden')
     result = ava_pattern.findall(data)
